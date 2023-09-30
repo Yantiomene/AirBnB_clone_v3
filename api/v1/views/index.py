@@ -10,6 +10,7 @@ from models import storage
 def index():
     return jsonify(status="OK")
 
+
 @app_views.route('stats', methods=['GET'], strict_slashes=False)
 def stats():
     """Returns the stats for each class"""
