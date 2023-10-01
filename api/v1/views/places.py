@@ -25,7 +25,7 @@ def get_places(city_id):
 @app_views.route('/places/<string:place_id>', methods=['GET'],
                  strict_slashes=False)
 def get_place(place_id):
-    """retrieve all places"""
+    """retrieve a place"""
     place = storage.get("Place", place_id)
     if place is None:
         abort(404)
@@ -35,7 +35,7 @@ def get_place(place_id):
 @app_views.route('/places/<string:place_id>', methods=['DELETE'],
                  strict_slashes=False)
 def delete_place(place_id):
-    """deletes place based on its place_id"""
+    """deletes place based on its id"""
     place = storage.get("Place", place_id)
     if place is None:
         abort(404)
@@ -52,18 +52,19 @@ def post_place(city_id):
     if city is None:
         abort(404)
     if not request.get_json():
-        return make_response(jsonify({'error': 'Not a JSON'}), 400)
+        abort(400, 'Not a JSON')
     kwargs = request.get_json()
     if 'user_id' not in kwargs:
-        return make_response(jsonify({'error': 'Missing user_id'}), 400)
+        abort(400, 'Missing user_id')
     user = storage.get("User", kwargs['user_id'])
     if user is None:
         abort(404)
     if 'name' not in kwargs:
-        return make_response(jsonify({'error': 'Missing name'}), 400)
+        abort(400, 'Missing name')
     kwargs['city_id'] = city_id
     place = Place(**kwargs)
-    place.save()
+    storage.new(place)
+    storage.save()
     return make_response(jsonify(place.to_dict()), 201)
 
 
@@ -75,12 +76,12 @@ def put_place(place_id):
     if place is None:
         abort(404)
     if not request.get_json():
-        return make_response(jsonify({'error': 'Not a JSON'}), 400)
+        abort(400, 'Not a JSON')
     for attr, val in request.get_json().items():
         if attr not in ['id', 'user_id', 'city_id', 'created_at',
                         'updated_at']:
             setattr(place, attr, val)
-    place.save()
+    storage.save()
     return jsonify(place.to_dict())
 
 
