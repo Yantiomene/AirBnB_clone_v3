@@ -88,7 +88,7 @@ def put_place(place_id):
 @app_views.route('/places_search', methods=['POST'], strict_slashes=False)
 def post_places_search():
     """searches for a place"""
-    if not resquest.get_json():
+    if not request.get_json():
         abort(400, "Not a JSON")
 
     params = request.get_json()
