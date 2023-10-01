@@ -11,7 +11,7 @@ from flasgger import Swagger
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
-CORS(app, ressources={r"/*": {"origins": "0.0.0.0"}})
+CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 app.config['SWAGGER'] = {
     "swagger_version": "2.0",
     "title": "Flask REST API",
